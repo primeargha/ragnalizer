@@ -166,7 +166,7 @@ export default function HomePage() {
               Sign in
             </Link>
             <Link
-              href="/register"
+              href="/login"
               className="landing-btn-primary rounded-full px-4 py-2 text-sm font-semibold"
             >
               Get started
@@ -318,7 +318,7 @@ export default function HomePage() {
               </h2>
             </div>
             <Link
-              href="/register"
+              href="/login"
               className="group flex items-center gap-2 text-sm font-medium text-(--landing-accent-deep)"
             >
               Browse the full report
@@ -497,7 +497,7 @@ export default function HomePage() {
             </h2>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Link
-                href="/register"
+                href="/login"
                 className="landing-btn-primary rounded-full px-6 py-3.5 text-sm font-semibold"
               >
                 Create account

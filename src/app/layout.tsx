@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, JetBrains_Mono, Figtree } from "next/font/google";
+import { Figtree, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-
+import { Toaster } from "@/components/ui/sonner";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -47,7 +47,12 @@ export const metadata: Metadata = {
     "vector embeddings",
     "Next.js",
   ],
-  authors: [{ name: "Argha Chandra Das", url: "https://www.linkedin.com/in/argha-chandra-das-b487a1215" }],
+  authors: [
+    {
+      name: "Argha Chandra Das",
+      url: "https://www.linkedin.com/in/argha-chandra-das-b487a1215",
+    },
+  ],
   creator: "Argha Chandra Das",
   alternates: {
     canonical: "/",
@@ -94,6 +99,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           disableTransitionOnChange
         >
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
