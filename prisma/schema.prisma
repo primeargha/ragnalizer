@@ -19,6 +19,15 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
+  stripeCustomerId String? @unique
+  stripeSubscriptionId String? @unique
+  stripePriceId String?
+  plan Plan @default(free)
+  planStatus PlanStatus @default(none)
+
+  projects Project[]
+  usageEvents UsageEvent[]
+
   @@unique([email])
   @@map("user")
 }
@@ -69,4 +78,89 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+enum Plan {
+  free
+  premium
+}
+
+enum PlanStatus {
+  none
+  active
+  past_due
+  cancelled
+}
+
+enum ProjectSource {
+  github
+  upload
+}
+
+enum ProjectStatus {
+  queued
+  upload
+  completed
+  failed
+}
+
+model UsageEvent {
+  id String @id @default(uuid())
+  userId String
+  type String // analysis
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type, createdAt])
+}
+
+model Project {
+  id String @id @default(uuid())
+  userId String
+  name String
+  source ProjectSource
+  repositoryUrl String?
+  framework String?
+  status ProjectStatus @default(queued)
+  errorMessage String?
+  fileCount Int @default(0)
+  progressStep String?
+  progressPercent Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chunks CodeChunk[]
+  report Report?
+
+  @@index([userId])
+}
+
+model CodeChunk { /// Chunked code from a project
+  id String @id @default(uuid())
+  projectId String
+  filePath String
+  content String @db.Text
+  startLine Int?
+  endLine Int?
+
+  embedding Unsupported("vector(384)") // list of 384 numbers that represents meaning of the code.
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+model Report {
+  id String @id @default(uuid())
+  projectId String @unique // one report per project
+  healthScore Int
+  categoryScore Json // {architecture: 0.8, performance: 0.6, security: 0.4, maintainability: 0.2, scalability: 0.1}
+  issues Json // {title, description}
+
+  createdAt DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
